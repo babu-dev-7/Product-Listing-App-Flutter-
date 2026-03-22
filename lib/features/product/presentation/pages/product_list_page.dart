@@ -31,10 +31,7 @@ class ProductListPage extends StatelessWidget {
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: const Color(0xFFEEEEEE),
-            height: 1,
-          ),
+          child: Container(color: const Color(0xFFEEEEEE), height: 1),
         ),
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
@@ -113,7 +110,8 @@ class ProductListPage extends StatelessWidget {
                                 children: [
                                   // Title row with heart
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Text(
@@ -153,12 +151,23 @@ class ProductListPage extends StatelessWidget {
                                   // Price + Add to Cart row
                                   Row(
                                     children: [
-                                      Text(
-                                        "₹${p.price}",
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w800,
-                                          color: Color(0xFF2D3436),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.shade100,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "₹${p.price}",
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.green,
+                                          ),
                                         ),
                                       ),
                                       const Spacer(),
@@ -173,7 +182,8 @@ class ProductListPage extends StatelessWidget {
                                           icon: Icon(
                                             inCart
                                                 ? Icons.check_rounded
-                                                : Icons.add_shopping_cart_rounded,
+                                                : Icons
+                                                      .add_shopping_cart_rounded,
                                             size: 16,
                                             color: Colors.white,
                                           ),

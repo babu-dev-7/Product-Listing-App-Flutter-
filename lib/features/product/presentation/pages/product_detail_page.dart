@@ -29,8 +29,12 @@ class ProductDetailPage extends StatelessWidget {
               final isFav = HiveService.isFavorite(product.id);
               return IconButton(
                 icon: Icon(
-                  isFav ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                  color: isFav ? const Color(0xFFE84393) : const Color(0xFFB2BEC3),
+                  isFav
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_outline_rounded,
+                  color: isFav
+                      ? const Color(0xFFE84393)
+                      : const Color(0xFFB2BEC3),
                 ),
                 onPressed: () {
                   context.read<ProductBloc>().add(
@@ -43,10 +47,7 @@ class ProductDetailPage extends StatelessWidget {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: const Color(0xFFEEEEEE),
-            height: 1,
-          ),
+          child: Container(color: const Color(0xFFEEEEEE), height: 1),
         ),
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
@@ -98,12 +99,21 @@ class ProductDetailPage extends StatelessWidget {
                             const SizedBox(height: 12),
 
                             // Price
-                            Text(
-                              "₹${product.price}",
-                              style: const TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF2D3436),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade100,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                "₹${product.price}",
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.green,
+                                ),
                               ),
                             ),
 
