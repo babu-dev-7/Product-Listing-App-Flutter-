@@ -21,5 +21,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         emit(ProductLoaded((state as ProductLoaded).products));
       }
     });
+
+    on<ToggleCartEvent>((event, emit) {
+      HiveService.toggleCart(event.id);
+
+      if (state is ProductLoaded) {
+        emit(ProductLoaded((state as ProductLoaded).products));
+      }
+    });
   }
 }

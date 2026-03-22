@@ -7,3 +7,9 @@ class ToggleFavoriteEvent extends ProductEvent {
 
   ToggleFavoriteEvent(this.id);
 }
+
+class ToggleCartEvent extends ProductEvent {
+  final int id;
+
+  ToggleCartEvent(this.id);
+}

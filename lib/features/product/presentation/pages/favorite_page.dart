@@ -11,24 +11,25 @@ class FavoritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FD),
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text("Favorites"),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFE84393), Color(0xFFFD79A8)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        foregroundColor: Colors.white,
+        title: const Text("Wishlist"),
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2D3436),
+        elevation: 0,
         titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
+          color: Color(0xFF2D3436),
+          fontSize: 24,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.5,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: const Color(0xFFEEEEEE),
+            height: 1,
+          ),
         ),
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
@@ -45,21 +46,21 @@ class FavoritePage extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.favorite_outline_rounded,
-                      size: 80,
+                      size: 72,
                       color: Colors.grey.shade300,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "No favorites yet",
+                      "Your wishlist is empty",
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: Colors.grey.shade500,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Tap the heart icon to add products",
+                      "Save items you love by tapping the ♡",
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade400,
@@ -75,6 +76,7 @@ class FavoritePage extends StatelessWidget {
               itemCount: favProducts.length,
               itemBuilder: (context, i) {
                 final p = favProducts[i];
+                final inCart = HiveService.isInCart(p.id);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -82,39 +84,39 @@ class FavoritePage extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: const Color(0xFFE8E6F0),
+                        color: const Color(0xFFF0F0F0),
                         width: 1,
                       ),
                     ),
                     child: Row(
                       children: [
-                        // IMAGE
+                        // Image
                         Container(
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFF0F6),
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFF8F8F8),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              p.image,
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.contain,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Image.network(
+                                p.image,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),
 
                         const SizedBox(width: 14),
 
-                        // TITLE + PRICE
+                        // Title + Price + Move to Cart
                         Expanded(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -129,46 +131,81 @@ class FavoritePage extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF00B894)
-                                      .withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  "₹ ${p.price}",
-                                  style: const TextStyle(
-                                    color: Color(0xFF00B894),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
+                              Row(
+                                children: [
+                                  Text(
+                                    "₹${p.price}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF2D3436),
+                                    ),
                                   ),
-                                ),
+                                  const Spacer(),
+                                  // Move to cart
+                                  SizedBox(
+                                    height: 30,
+                                    child: OutlinedButton.icon(
+                                      onPressed: () {
+                                        context.read<ProductBloc>().add(
+                                          ToggleCartEvent(p.id),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        inCart
+                                            ? Icons.check_rounded
+                                            : Icons.shopping_bag_outlined,
+                                        size: 14,
+                                        color: inCart
+                                            ? const Color(0xFF00B894)
+                                            : const Color(0xFF0984E3),
+                                      ),
+                                      label: Text(
+                                        inCart ? "In Cart" : "Move to Cart",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: inCart
+                                              ? const Color(0xFF00B894)
+                                              : const Color(0xFF0984E3),
+                                        ),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        side: BorderSide(
+                                          color: inCart
+                                              ? const Color(0xFF00B894)
+                                              : const Color(0xFF0984E3),
+                                          width: 1.2,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
 
-                        // REMOVE FAVORITE
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE84393).withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.favorite_rounded,
-                              color: Color(0xFFE84393),
-                              size: 22,
-                            ),
-                            onPressed: () {
-                              context.read<ProductBloc>().add(
-                                ToggleFavoriteEvent(p.id),
-                              );
-                            },
+                        const SizedBox(width: 8),
+
+                        // Remove from wishlist
+                        GestureDetector(
+                          onTap: () {
+                            context.read<ProductBloc>().add(
+                              ToggleFavoriteEvent(p.id),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Color(0xFFB2BEC3),
+                            size: 20,
                           ),
                         ),
                       ],

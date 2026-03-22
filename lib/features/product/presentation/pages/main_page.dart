@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:product/features/product/presentation/pages/cart_page.dart';
 import 'product_list_page.dart';
 import 'favorite_page.dart';
 
@@ -15,37 +18,36 @@ class _MainPageState extends State<MainPage> {
   final pages = [
     const ProductListPage(),
     const FavoritePage(),
+    const CartPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: pages[index],
+      body: IndexedStack(
+        index: index,
+        children: pages,
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF6C5CE7).withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
+          border: Border(
+            top: BorderSide(color: Color(0xFFEEEEEE), width: 1),
+          ),
         ),
         child: NavigationBar(
           selectedIndex: index,
           onDestinationSelected: (value) {
             setState(() => index = value);
           },
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           elevation: 0,
-          indicatorColor: const Color(0xFF6C5CE7).withOpacity(0.12),
+          height: 65,
+          indicatorColor: const Color(0xFFF0EEFF),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.storefront_outlined),
+              icon: Icon(Icons.storefront_outlined, color: Color(0xFFB2BEC3)),
               selectedIcon: Icon(
                 Icons.storefront,
                 color: Color(0xFF6C5CE7),
@@ -53,12 +55,20 @@ class _MainPageState extends State<MainPage> {
               label: "Shop",
             ),
             NavigationDestination(
-              icon: Icon(Icons.favorite_outline_rounded),
+              icon: Icon(Icons.favorite_outline_rounded, color: Color(0xFFB2BEC3)),
               selectedIcon: Icon(
                 Icons.favorite_rounded,
                 color: Color(0xFFE84393),
               ),
-              label: "Favorites",
+              label: "Wishlist",
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.shopping_bag_outlined, color: Color(0xFFB2BEC3)),
+              selectedIcon: Icon(
+                Icons.shopping_bag,
+                color: Color(0xFF0984E3),
+              ),
+              label: "Cart",
             ),
           ],
         ),

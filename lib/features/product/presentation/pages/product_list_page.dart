@@ -16,24 +16,25 @@ class ProductListPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FD),
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text("Discover"),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF6C5CE7), Color(0xFFA29BFE)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        foregroundColor: Colors.white,
+        title: const Text("Shop"),
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2D3436),
+        elevation: 0,
         titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
+          color: Color(0xFF2D3436),
+          fontSize: 24,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.5,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: const Color(0xFFEEEEEE),
+            height: 1,
+          ),
         ),
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
@@ -51,15 +52,16 @@ class ProductListPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final p = state.products[index];
                 final isFav = HiveService.isFavorite(p.id);
+                final inCart = HiveService.isInCart(p.id);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Material(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(14),
                     color: Colors.white,
                     elevation: 0,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(14),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -74,98 +76,133 @@ class ProductListPage extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: const Color(0xFFE8E6F0),
+                            color: const Color(0xFFF0F0F0),
                             width: 1,
                           ),
                         ),
                         child: Row(
                           children: [
-                            // 🖼 IMAGE
+                            // Product Image
                             Container(
-                              width: 80,
-                              height: 80,
+                              width: 85,
+                              height: 85,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0EEFF),
-                                borderRadius: BorderRadius.circular(12),
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  p.image,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.contain,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Image.network(
+                                    p.image,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             ),
 
                             const SizedBox(width: 14),
 
+                            // Title + Price + Add to Cart
                             Expanded(
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    p.title,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: Color(0xFF2D3436),
-                                      height: 1.3,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(
-                                        0xFF00B894,
-                                      ).withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      "₹ ${p.price}",
-                                      style: const TextStyle(
-                                        color: Color(0xFF00B894),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
+                                  // Title row with heart
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          p.title,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color: Color(0xFF2D3436),
+                                            height: 1.3,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(width: 4),
+                                      GestureDetector(
+                                        onTap: () {
+                                          context.read<ProductBloc>().add(
+                                            ToggleFavoriteEvent(p.id),
+                                          );
+                                        },
+                                        child: Icon(
+                                          isFav
+                                              ? Icons.favorite_rounded
+                                              : Icons.favorite_outline_rounded,
+                                          color: isFav
+                                              ? const Color(0xFFE84393)
+                                              : const Color(0xFFCCCCCC),
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  // Price + Add to Cart row
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "₹${p.price}",
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xFF2D3436),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      SizedBox(
+                                        height: 32,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            context.read<ProductBloc>().add(
+                                              ToggleCartEvent(p.id),
+                                            );
+                                          },
+                                          icon: Icon(
+                                            inCart
+                                                ? Icons.check_rounded
+                                                : Icons.add_shopping_cart_rounded,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                          label: Text(
+                                            inCart ? "Added" : "Add",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: inCart
+                                                ? const Color(0xFF00B894)
+                                                : const Color(0xFF0984E3),
+                                            elevation: 0,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                            ),
-
-                            Container(
-                              decoration: BoxDecoration(
-                                color: isFav
-                                    ? const Color(0xFFE84393).withOpacity(0.1)
-                                    : const Color(0xFFF0F0F0),
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                icon: Icon(
-                                  isFav
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_outline_rounded,
-                                  color: isFav
-                                      ? const Color(0xFFE84393)
-                                      : const Color(0xFFB2BEC3),
-                                  size: 22,
-                                ),
-                                onPressed: () {
-                                  context.read<ProductBloc>().add(
-                                    ToggleFavoriteEvent(p.id),
-                                  );
-                                },
                               ),
                             ),
                           ],
