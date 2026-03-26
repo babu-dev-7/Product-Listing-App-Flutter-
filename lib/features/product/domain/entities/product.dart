@@ -13,3 +13,4 @@ class Product {
     required this.image,
   });
 }
+// updated
